@@ -99,7 +99,7 @@ async function sendChatMessage() {
     history: chatbotHistory
   })
 });
-       });
+      
 
     const data = await response.json();
 
