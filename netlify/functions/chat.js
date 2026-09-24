@@ -12,8 +12,7 @@ exports.handler = async function (event) {
   }
 
   try {
-    const { message, language = "en" } = JSON.parse(event.body || "{}");
-
+   const { message, language = "en", history = [] } = JSON.parse(event.body || "{}");
     if (!message || !message.trim()) {
       return {
         statusCode: 400,
@@ -66,11 +65,24 @@ Important rules:
 - Do not mention that you are Gemini.
 `;
 
-    const prompt = `${systemPrompt}
+    const conversationHistory = Array.isArray(history)
+  ? history
+      .slice(-20)
+      .map((item) => {
+        const speaker = item.role === "assistant" ? "Skyline AI Assistant" : "Visitor";
+        return `${speaker}: ${item.text || ""}`;
+      })
+      .join("\n")
+  : "";
+
+const prompt = `${systemPrompt}
 
 Visitor language preference: ${language}
 
-Visitor message:
+Previous conversation:
+${conversationHistory || "No previous conversation."}
+
+Current visitor message:
 ${message}`;
 
     const response = await fetch(
