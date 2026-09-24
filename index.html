@@ -86,3 +86,44 @@
 <a class="float" href="https://wa.me/917075307450" aria-label="Chat on WhatsApp">WA</a>
 <script src="script.js"></script>
 </body></html>
+<!-- Skyline AI Chatbot -->
+<div id="skyline-chatbot">
+  <button id="chatbot-toggle" type="button" aria-label="Open Skyline AI Assistant">
+    💬
+  </button>
+
+  <div id="chatbot-window" hidden>
+    <div class="chatbot-header">
+      <div>
+        <strong>Skyline AI Assistant</strong>
+        <small>AI solutions for your business</small>
+      </div>
+      <button id="chatbot-close" type="button" aria-label="Close chat">×</button>
+    </div>
+
+    <div id="chatbot-messages">
+      <div class="bot-message">
+        👋 Welcome to Skyline AI.<br>
+        Please choose your language.
+      </div>
+
+      <div class="chatbot-language">
+        <button type="button" data-language="en">English</button>
+        <button type="button" data-language="te">తెలుగు</button>
+      </div>
+    </div>
+
+    <div class="chatbot-input-area">
+      <input
+        id="chatbot-input"
+        type="text"
+        placeholder="Type your message..."
+        autocomplete="off"
+      >
+      <button id="chatbot-send" type="button">Send</button>
+    </div>
+  </div>
+</div>
+<!-- End Skyline AI Chatbot -->
+<script src="script.js"></script>
+</body></html>
