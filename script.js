@@ -66,7 +66,7 @@ languageButtons.forEach((button) => {
   });
 });
 
-function sendChatMessage() {
+async function sendChatMessage() {
   const message = chatbotInput.value.trim();
 
   if (!message) return;
@@ -74,14 +74,60 @@ function sendChatMessage() {
   addUserMessage(message);
   chatbotInput.value = "";
 
-  if (chatbotLanguage === "te") {
-    addBotMessage(
-      "ధన్యవాదాలు. మీ అవసరాన్ని అర్థం చేసుకుంటున్నాను. Skyline AI మీ వ్యాపారానికి సరైన AI పరిష్కారాన్ని సూచించగలదు."
-    );
-  } else {
-    addBotMessage(
-      "Thank you. I'm understanding your requirement. Skyline AI can help identify the right AI solution for your business."
-    );
+  chatbotSend.disabled = true;
+  chatbotInput.disabled = true;
+
+  const thinkingDiv = document.createElement("div");
+  thinkingDiv.className = "bot-message";
+  thinkingDiv.style.display = "block";
+  thinkingDiv.style.marginTop = "12px";
+  thinkingDiv.textContent =
+    chatbotLanguage === "te" ? "ఒక్క క్షణం..." : "Thinking...";
+
+  chatbotMessages.appendChild(thinkingDiv);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+  try {
+    const response = await fetch("/.netlify/functions/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: message,
+        language: chatbotLanguage
+      })
+    });
+
+    const data = await response.json();
+
+    thinkingDiv.remove();
+
+    if (!response.ok) {
+      throw new Error(data.error || "AI request failed");
+    }
+
+    addBotMessage(data.reply);
+
+  } catch (error) {
+    thinkingDiv.remove();
+
+    if (chatbotLanguage === "te") {
+      addBotMessage(
+        "క్షమించండి. ప్రస్తుతం AI Assistant స్పందించలేకపోతోంది. దయచేసి కొద్దిసేపటి తర్వాత మళ్లీ ప్రయత్నించండి."
+      );
+    } else {
+      addBotMessage(
+        "Sorry, the AI Assistant is temporarily unavailable. Please try again shortly."
+      );
+    }
+
+    console.error("Skyline AI chatbot error:", error);
+
+  } finally {
+    chatbotSend.disabled = false;
+    chatbotInput.disabled = false;
+    chatbotInput.focus();
   }
 }
 
@@ -92,4 +138,5 @@ chatbotInput?.addEventListener("keydown", (event) => {
     sendChatMessage();
   }
 });
+
 // End Skyline AI Chatbot
