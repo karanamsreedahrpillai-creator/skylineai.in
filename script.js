@@ -88,16 +88,17 @@ async function sendChatMessage() {
   chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
   try {
-    const response = await fetch("/.netlify/functions/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: message,
-        language: chatbotLanguage
-        history: chatbotHistory
-      })
+          const response = await fetch("/.netlify/functions/chat", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    message: message,
+    language: chatbotLanguage,
+    history: chatbotHistory
+  })
+});
        });
 
     const data = await response.json();
