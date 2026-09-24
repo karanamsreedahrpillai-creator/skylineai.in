@@ -9,7 +9,7 @@ const chatbotSend = document.getElementById("chatbot-send");
 const languageButtons = document.querySelectorAll("[data-language]");
 
 let chatbotLanguage = "en";
-
+let chatbotHistory = [];
 chatbotToggle?.addEventListener("click", () => {
   chatbotWindow.hidden = false;
   chatbotInput?.focus();
@@ -96,8 +96,9 @@ async function sendChatMessage() {
       body: JSON.stringify({
         message: message,
         language: chatbotLanguage
+        history: chatbotHistory
       })
-    });
+       });
 
     const data = await response.json();
 
@@ -108,6 +109,20 @@ async function sendChatMessage() {
     }
 
     addBotMessage(data.reply);
+    chatbotHistory.push({
+  role: "user",
+  text: message
+});
+
+chatbotHistory.push({
+  role: "assistant",
+  text: data.reply
+});
+
+// Keep only the latest 20 messages
+if (chatbotHistory.length > 20) {
+  chatbotHistory = chatbotHistory.slice(-20);
+}
 
   } catch (error) {
     thinkingDiv.remove();
